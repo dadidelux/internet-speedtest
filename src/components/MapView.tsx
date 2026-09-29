@@ -2,6 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import type L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
 interface SpeedTest {
   id: string;
@@ -103,11 +106,12 @@ export default function MapView({ tests }: MapViewProps) {
   const [leaflet, setLeaflet] = useState<typeof L | null>(null);
 
   useEffect(() => {
-    Promise.all([
-      import("leaflet"),
-      import("leaflet.markercluster"),
-    ]).then(([LMod]) => {
-      setLeaflet(LMod.default);
+    import("leaflet").then((LMod) => {
+      const L = LMod.default || LMod;
+      (window as any).L = L;
+      return import("leaflet.markercluster").then(() => L);
+    }).then((L) => {
+      setLeaflet(L);
     });
   }, []);
 
