@@ -38,7 +38,7 @@ export default function CoverageEstimates() {
             Pasig Average
           </span>
           <span className="text-xs text-gray-400">
-            All ISPs
+            All ISPs — external reference, not Bagbag measurement
           </span>
         </div>
         <div className="grid grid-cols-3 gap-4 text-center">
@@ -79,7 +79,12 @@ export default function CoverageEstimates() {
                 key={row.isp}
                 className="border-b border-gray-100 dark:border-gray-800"
               >
-                <td className="py-2.5 font-medium">{row.isp}</td>
+                <td className="py-2.5 font-medium">
+                  {row.isp}
+                  <span className="block text-xs text-gray-400">
+                    source: SpeedGeo.net (Pasig, Jul2025-Jun2026) — external reference, not Bagbag measurement
+                  </span>
+                </td>
                 <td className="py-2.5 text-right">{row.download} Mbps</td>
                 <td className="py-2.5 text-right">{row.upload} Mbps</td>
                 <td className="py-2.5 text-right text-gray-500">{row.ping} ms</td>
