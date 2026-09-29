@@ -121,71 +121,75 @@ export default function ResultsDashboard() {
         </select>
       </div>
 
-      {filtered.length === 0 ? (
-        <p className="text-center py-8 text-gray-500">
-          No results yet. Be the first to submit!
-        </p>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b text-left text-gray-500">
-                <th className="pb-2 font-medium">ISP</th>
-                <th className="pb-2 font-medium text-right">Samples</th>
-                <th className="pb-2 font-medium text-right">Promised</th>
-                <th className="pb-2 font-medium text-right">Actual DL</th>
-                <th className="pb-2 font-medium text-right">Ratio</th>
-                <th className="pb-2 font-medium text-right">Avg UL</th>
-                <th className="pb-2 font-medium text-right">Avg Ping</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((s) => (
-                <tr
-                  key={s.isp}
-                  className="border-b border-gray-100 dark:border-gray-800"
-                >
-                  <td className="py-2.5 font-medium">{s.isp}</td>
-                  <td className="py-2.5 text-right text-gray-500">
-                    {s.count}
-                  </td>
-                  <td className="py-2.5 text-right">
-                    {s.avgPromised.toFixed(0)} Mbps
-                  </td>
-                  <td className="py-2.5 text-right">
-                    {s.avgDownload.toFixed(1)} Mbps
-                  </td>
-                  <td className="py-2.5 text-right">
-                    <span
-                      className={
-                        s.avgRatio >= 80
-                          ? "text-green-600"
-                          : s.avgRatio >= 50
-                            ? "text-amber-600"
-                            : "text-red-600"
-                      }
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex-1 min-w-0">
+          {filtered.length === 0 ? (
+            <p className="text-center py-8 text-gray-500">
+              No results yet. Be the first to submit!
+            </p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b text-left text-gray-500">
+                    <th className="pb-2 font-medium">ISP</th>
+                    <th className="pb-2 font-medium text-right">Samples</th>
+                    <th className="pb-2 font-medium text-right">Promised</th>
+                    <th className="pb-2 font-medium text-right">Actual DL</th>
+                    <th className="pb-2 font-medium text-right">Ratio</th>
+                    <th className="pb-2 font-medium text-right">Avg UL</th>
+                    <th className="pb-2 font-medium text-right">Avg Ping</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((s) => (
+                    <tr
+                      key={s.isp}
+                      className="border-b border-gray-100 dark:border-gray-800"
                     >
-                      {s.avgRatio.toFixed(0)}%
-                    </span>
-                  </td>
-                  <td className="py-2.5 text-right">
-                    {s.avgUpload.toFixed(1)} Mbps
-                  </td>
-                  <td className="py-2.5 text-right text-gray-500">
-                    {s.avgPing != null ? `${s.avgPing.toFixed(0)} ms` : "—"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                      <td className="py-2.5 font-medium">{s.isp}</td>
+                      <td className="py-2.5 text-right text-gray-500">
+                        {s.count}
+                      </td>
+                      <td className="py-2.5 text-right">
+                        {s.avgPromised.toFixed(0)} Mbps
+                      </td>
+                      <td className="py-2.5 text-right">
+                        {s.avgDownload.toFixed(1)} Mbps
+                      </td>
+                      <td className="py-2.5 text-right">
+                        <span
+                          className={
+                            s.avgRatio >= 80
+                              ? "text-green-600"
+                              : s.avgRatio >= 50
+                                ? "text-amber-600"
+                                : "text-red-600"
+                          }
+                        >
+                          {s.avgRatio.toFixed(0)}%
+                        </span>
+                      </td>
+                      <td className="py-2.5 text-right">
+                        {s.avgUpload.toFixed(1)} Mbps
+                      </td>
+                      <td className="py-2.5 text-right text-gray-500">
+                        {s.avgPing != null ? `${s.avgPing.toFixed(0)} ms` : "—"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
-      )}
 
-      {tests.length > 0 && (
-        <div className="mt-8">
-          <MapView tests={tests} />
-        </div>
-      )}
+        {tests.length > 0 && (
+          <div className="lg:w-[45%] shrink-0">
+            <MapView tests={tests} />
+          </div>
+        )}
+      </div>
 
       {tests.length > 0 && (
         <div className="mt-8">

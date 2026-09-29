@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       <header className="border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-black">
-        <div className="mx-auto max-w-3xl px-6 py-6">
+        <div className="mx-auto max-w-5xl px-6 py-6">
           <h1 className="text-2xl font-bold tracking-tight">
             Bagbag Internet Speed Test
           </h1>
@@ -16,7 +16,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-8 space-y-10">
+      <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-8 space-y-10">
         {/* Submit Section */}
         <section>
           <h2 className="mb-4 text-lg font-semibold">Submit Your Speed Test</h2>
