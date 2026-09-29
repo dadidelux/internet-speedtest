@@ -31,6 +31,7 @@ const PUROK_OPTIONS = [
 interface FormData {
   isp: string;
   planType: string;
+  planName: string;
   promisedMbps: string;
   downloadMbps: string;
   uploadMbps: string;
@@ -80,6 +81,7 @@ export default function SpeedTestForm() {
   const [form, setForm] = useState<FormData>({
     isp: "",
     planType: "",
+    planName: "",
     promisedMbps: "",
     downloadMbps: "",
     uploadMbps: "",
@@ -174,7 +176,7 @@ export default function SpeedTestForm() {
       isNaN(Number(form.promisedMbps)) ||
       Number(form.promisedMbps) < 0
     ) {
-      errs.promisedMbps = "Enter promised speed (Mbps)";
+      errs.promisedMbps = "Enter current plan speed (Mbps)";
     }
     if (
       !form.downloadMbps ||
@@ -242,6 +244,7 @@ export default function SpeedTestForm() {
       setForm({
         isp: "",
         planType: "",
+        planName: "",
         promisedMbps: "",
         downloadMbps: "",
         uploadMbps: "",
@@ -327,7 +330,7 @@ export default function SpeedTestForm() {
         </div>
         <div>
           <label className="block text-sm font-medium mb-1.5">
-            Promised Speed (Mbps)
+            Current Plan Speed (Mbps)
           </label>
           <input
             type="number"
