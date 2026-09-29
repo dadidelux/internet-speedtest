@@ -34,6 +34,7 @@ export default function ResultsDashboard() {
   const [tests, setTests] = useState<SpeedTest[]>([]);
   const [stats, setStats] = useState<ISPStats[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [ispFilter, setIspsFilter] = useState("all");
 
   function computeStats(data: SpeedTest[]) {
@@ -73,15 +74,21 @@ export default function ResultsDashboard() {
 
   useEffect(() => {
     async function load() {
-      const { data, error } = await supabase
-        .from("public_speed_tests")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(200);
+      try {
+        const { data, error } = await supabase
+          .from("public_speed_tests")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(200);
 
-      if (!error && data) {
-        setTests(data as SpeedTest[]);
-        computeStats(data as SpeedTest[]);
+        if (error) {
+          setLoadError(error.message);
+        } else if (data) {
+          setTests(data as SpeedTest[]);
+          computeStats(data as SpeedTest[]);
+        }
+      } catch (e: any) {
+        setLoadError(e?.message || "Failed to load results");
       }
       setLoading(false);
     }
@@ -97,6 +104,19 @@ export default function ResultsDashboard() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-sm text-gray-500">Loading results...</div>
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="rounded-md border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-950">
+        <p className="text-sm font-medium text-red-800 dark:text-red-200">
+          Failed to load results
+        </p>
+        <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+          {loadError}
+        </p>
       </div>
     );
   }
