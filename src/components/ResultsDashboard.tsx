@@ -165,7 +165,7 @@ export default function ResultsDashboard() {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
-        <div className="flex-1 min-w-0">
+        <div className="lg:w-1/2 min-w-0">
           {filtered.length === 0 ? (
             <p className="text-center py-8 text-gray-500">
               No results yet. Be the first to submit!
@@ -228,7 +228,7 @@ export default function ResultsDashboard() {
         </div>
 
         {tests.length > 0 && (
-          <div className="lg:w-[45%] shrink-0">
+          <div className="lg:w-1/2 shrink-0">
             <MapView tests={tests} />
           </div>
         )}
