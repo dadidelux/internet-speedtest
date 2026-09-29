@@ -1,5 +1,6 @@
 import SpeedTestForm from "@/components/SpeedTestForm";
 import ResultsDashboard from "@/components/ResultsDashboard";
+import CoverageEstimates from "@/components/CoverageEstimates";
 import MapView from "@/components/MapView";
 
 
@@ -26,7 +27,7 @@ export default function Home() {
             <h2 className="mb-4 text-lg font-semibold">Submit Your Speed Test</h2>
             <p className="mb-4 text-sm text-gray-500">
               Run a speed test, then report your ISP, plan, and actual results
-              below. We compare promised vs. actual speeds across the barangay.
+              below. We compare current plan vs. actual speeds across the barangay.
             </p>
             <div className="rounded-lg border border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-gray-950">
               <SpeedTestForm />
@@ -38,6 +39,10 @@ export default function Home() {
             <ResultsDashboard />
           </section>
 
+          {/* External Coverage Estimates */}
+          <section>
+            <CoverageEstimates />
+          </section>
 
         </div>
 
