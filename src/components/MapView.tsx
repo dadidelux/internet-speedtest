@@ -5,6 +5,7 @@ import type L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+import { supabase } from "@/lib/supabase";
 
 interface SpeedTest {
   id: string;
@@ -97,13 +98,32 @@ function buildBubbles(tests: SpeedTest[]): PurokBubble[] {
 
 interface MapViewProps {
   tests: SpeedTest[];
+  fullHeight?: boolean;
 }
 
-export default function MapView({ tests }: MapViewProps) {
+export default function MapView({ tests: propTests, fullHeight = false }: MapViewProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.MarkerClusterGroup | null>(null);
   const [leaflet, setLeaflet] = useState<typeof L | null>(null);
+  const [fetchedTests, setFetchedTests] = useState<SpeedTest[]>([]);
+
+  const tests = propTests.length > 0 ? propTests : fetchedTests;
+
+  useEffect(() => {
+    if (propTests.length > 0) return;
+    let cancelled = false;
+    async function load() {
+      const { data } = await supabase
+        .from("public_speed_tests")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(200);
+      if (!cancelled && data) setFetchedTests(data as SpeedTest[]);
+    }
+    load();
+    return () => { cancelled = true; };
+  }, [propTests.length > 0]);
 
   useEffect(() => {
     import("leaflet").then((LMod) => {
@@ -184,8 +204,8 @@ export default function MapView({ tests }: MapViewProps) {
   }, [tests, leaflet]);
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
+    <div className={fullHeight ? "h-full flex flex-col" : "space-y-3"}>
+      <div className="flex items-center justify-between px-2 py-3">
         <h3 className="text-sm font-semibold text-gray-500">
           Submissions Map
         </h3>
@@ -208,7 +228,10 @@ export default function MapView({ tests }: MapViewProps) {
       </div>
       <div
         ref={mapRef}
-        className="h-[400px] w-full rounded-lg border border-gray-200 dark:border-gray-800"
+        className={fullHeight
+          ? "flex-1 w-full rounded-lg border border-gray-200 dark:border-gray-800 min-h-0"
+          : "h-[400px] w-full rounded-lg border border-gray-200 dark:border-gray-800"
+        }
         style={{ zIndex: 0 }}
       />
     </div>

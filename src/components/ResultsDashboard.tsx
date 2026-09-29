@@ -1,17 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
 import { supabase } from "@/lib/supabase";
-
-const MapView = dynamic(
-  () =>
-    import("./MapView").catch((err) => {
-      console.error("MapView failed to load:", err);
-      return { default: () => null };
-    }),
-  { ssr: false }
-);
 
 interface SpeedTest {
   id: string;
@@ -164,8 +154,8 @@ export default function ResultsDashboard() {
         </select>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6">
-        <div className="lg:w-1/2 min-w-0">
+      <div className="flex flex-col gap-6">
+        <div className="min-w-0">
           {filtered.length === 0 ? (
             <p className="text-center py-8 text-gray-500">
               No results yet. Be the first to submit!
@@ -226,12 +216,6 @@ export default function ResultsDashboard() {
             </div>
           )}
         </div>
-
-        {tests.length > 0 && (
-          <div className="lg:w-1/2 shrink-0">
-            <MapView tests={tests} />
-          </div>
-        )}
       </div>
 
       {tests.length > 0 && (
