@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { supabase } from "@/lib/supabase";
 
-const MapView = dynamic(() => import("./MapView"), { ssr: false });
+const MapView = dynamic(() => import("./MapView").catch(() => ({ default: () => null })), { ssr: false });
 
 interface SpeedTest {
   id: string;
@@ -73,13 +73,22 @@ export default function ResultsDashboard() {
   }
 
   useEffect(() => {
+    let cancelled = false;
     async function load() {
       try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
+
         const { data, error } = await supabase
           .from("public_speed_tests")
           .select("*")
           .order("created_at", { ascending: false })
-          .limit(200);
+          .limit(200)
+          .abortSignal(controller.signal);
+
+        clearTimeout(timeout);
+
+        if (cancelled) return;
 
         if (error) {
           setLoadError(error.message);
@@ -88,11 +97,18 @@ export default function ResultsDashboard() {
           computeStats(data as SpeedTest[]);
         }
       } catch (e: any) {
-        setLoadError(e?.message || "Failed to load results");
+        if (!cancelled) {
+          setLoadError(
+            e?.name === "AbortError"
+              ? "Request timed out — check your connection"
+              : e?.message || "Failed to load results"
+          );
+        }
       }
-      setLoading(false);
+      if (!cancelled) setLoading(false);
     }
     load();
+    return () => { cancelled = true; };
   }, []);
 
   const filtered =
