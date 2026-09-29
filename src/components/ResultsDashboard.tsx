@@ -4,7 +4,14 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { supabase } from "@/lib/supabase";
 
-const MapView = dynamic(() => import("./MapView").catch(() => ({ default: () => null })), { ssr: false });
+const MapView = dynamic(
+  () =>
+    import("./MapView").catch((err) => {
+      console.error("MapView failed to load:", err);
+      return { default: () => null };
+    }),
+  { ssr: false }
+);
 
 interface SpeedTest {
   id: string;
