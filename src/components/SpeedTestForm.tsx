@@ -350,7 +350,7 @@ export default function SpeedTestForm() {
         </label>
         <select
           value={form.isp}
-          onChange={(e) => setForm({ ...form, isp: e.target.value })}
+          onChange={(e) => setForm({ ...form, isp: e.target.value, planName: "", currentPlanMbps: "" })}
           className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-900"
         >
           <option value="">Select ISP...</option>
