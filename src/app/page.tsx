@@ -1,7 +1,7 @@
 import SpeedTestForm from "@/components/SpeedTestForm";
 import ResultsDashboard from "@/components/ResultsDashboard";
 import MapView from "@/components/MapView";
-import CoverageEstimates from "@/components/CoverageEstimates";
+
 
 export default function Home() {
   return (
@@ -38,10 +38,7 @@ export default function Home() {
             <ResultsDashboard />
           </section>
 
-          {/* Coverage Estimates */}
-          <section>
-            <CoverageEstimates />
-          </section>
+
         </div>
 
         {/* Right: Map (full height) */}
