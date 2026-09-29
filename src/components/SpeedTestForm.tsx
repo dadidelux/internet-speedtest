@@ -28,11 +28,68 @@ const PUROK_OPTIONS = [
   "Goodwill Homes 2",
 ] as const;
 
+const ISP_PLANS: Record<string, { name: string; speed: number }[]> = {
+  Globe: [
+    { name: "GFiber Unli 1699 — 200 Mbps", speed: 200 },
+    { name: "GFiber Unli 2499 — 500 Mbps", speed: 500 },
+    { name: "GFiber Unli 3499 — 800 Mbps", speed: 800 },
+    { name: "GFiber Unli 4999 — 1 Gbps", speed: 1000 },
+    { name: "GFiber Prepaid 50 Mbps", speed: 50 },
+    { name: "GFiber Prepaid 100 Mbps", speed: 100 },
+    { name: "Home Prepaid WiFi — 10 Mbps", speed: 10 },
+    { name: "Home Prepaid WiFi — 15 Mbps", speed: 15 },
+    { name: "Home Prepaid WiFi — 20 Mbps", speed: 20 },
+    { name: "Home Prepaid WiFi — 50 Mbps", speed: 50 },
+  ],
+  PLDT: [
+    { name: "Home Fibr 1299 — 50 Mbps", speed: 50 },
+    { name: "Home Fibr 1699 — 100 Mbps", speed: 100 },
+    { name: "Home Fibr 2099 — 200 Mbps", speed: 200 },
+    { name: "Home Fibr 2699 — 400 Mbps", speed: 400 },
+    { name: "Home Fibr 3899 — 600 Mbps", speed: 600 },
+    { name: "Home Fibr 6499 — 1 Gbps", speed: 1000 },
+    { name: "Home Ultera 999 — 25 Mbps", speed: 25 },
+    { name: "Home Ultera 1299 — 50 Mbps", speed: 50 },
+  ],
+  Smart: [
+    { name: "Bro Turbo 599 — 10 Mbps", speed: 10 },
+    { name: "Bro Turbo 899 — 20 Mbps", speed: 20 },
+    { name: "Bro Turbo 1299 — 50 Mbps", speed: 50 },
+    { name: "Bro Turbo 1599 — 100 Mbps", speed: 100 },
+    { name: "Bro Turbo 1999 — 200 Mbps", speed: 200 },
+  ],
+  DITO: [
+    { name: "DITO Home 5G 599 — 20 Mbps", speed: 20 },
+    { name: "DITO Home 5G 899 — 50 Mbps", speed: 50 },
+    { name: "DITO Home 5G 1299 — 100 Mbps", speed: 100 },
+    { name: "DITO Home 5G 1699 — 200 Mbps", speed: 200 },
+  ],
+  Converge: [
+    { name: "FiberX 1500 — 200 Mbps", speed: 200 },
+    { name: "FiberX 2500 — 400 Mbps", speed: 400 },
+    { name: "FiberX 3500 — 600 Mbps", speed: 600 },
+    { name: "FiberX 4500 — 800 Mbps", speed: 800 },
+    { name: "FiberX 6000 — 1 Gbps", speed: 1000 },
+    { name: "FiberX Basic 1200 — 35 Mbps", speed: 35 },
+  ],
+  Sky: [
+    { name: "Sky Fiber 899 — 20 Mbps", speed: 20 },
+    { name: "Sky Fiber 1299 — 40 Mbps", speed: 40 },
+    { name: "Sky Fiber 1699 — 80 Mbps", speed: 80 },
+    { name: "Sky Fiber 2499 — 200 Mbps", speed: 200 },
+  ],
+  Bayan: [
+    { name: "Bayan Fiber 999 — 25 Mbps", speed: 25 },
+    { name: "Bayan Fiber 1299 — 50 Mbps", speed: 50 },
+    { name: "Bayan Fiber 1699 — 100 Mbps", speed: 100 },
+  ],
+};
+
 interface FormData {
   isp: string;
   planType: string;
   planName: string;
-  promisedMbps: string;
+  currentPlanMbps: string;
   downloadMbps: string;
   uploadMbps: string;
   pingMs: string;
@@ -82,7 +139,7 @@ export default function SpeedTestForm() {
     isp: "",
     planType: "",
     planName: "",
-    promisedMbps: "",
+    currentPlanMbps: "",
     downloadMbps: "",
     uploadMbps: "",
     pingMs: "",
@@ -172,11 +229,11 @@ export default function SpeedTestForm() {
     if (!form.isp) errs.isp = "Select your ISP";
     if (!form.planType) errs.planType = "Select plan type";
     if (
-      !form.promisedMbps ||
-      isNaN(Number(form.promisedMbps)) ||
-      Number(form.promisedMbps) < 0
+      !form.currentPlanMbps ||
+      isNaN(Number(form.currentPlanMbps)) ||
+      Number(form.currentPlanMbps) < 0
     ) {
-      errs.promisedMbps = "Enter current plan speed (Mbps)";
+      errs.currentPlanMbps = "Enter current plan speed (Mbps)";
     }
     if (
       !form.downloadMbps ||
@@ -213,7 +270,7 @@ export default function SpeedTestForm() {
     const payload = {
       isp: form.isp,
       plan_type: form.planType,
-      promised_mbps: Number(form.promisedMbps),
+      promised_mbps: Number(form.currentPlanMbps),
       download_mbps: Number(form.downloadMbps),
       upload_mbps: Number(form.uploadMbps),
       ping_ms: form.pingMs ? Number(form.pingMs) : null,
@@ -245,7 +302,7 @@ export default function SpeedTestForm() {
         isp: "",
         planType: "",
         planName: "",
-        promisedMbps: "",
+        currentPlanMbps: "",
         downloadMbps: "",
         uploadMbps: "",
         pingMs: "",
@@ -308,7 +365,7 @@ export default function SpeedTestForm() {
         )}
       </div>
 
-      {/* Plan Type + Promised Speed */}
+      {/* Plan Type + Current Plan Speed */}
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium mb-1.5">Plan Type</label>
@@ -332,19 +389,41 @@ export default function SpeedTestForm() {
           <label className="block text-sm font-medium mb-1.5">
             Current Plan Speed (Mbps)
           </label>
-          <input
-            type="number"
-            step="1"
-            min="0"
-            placeholder="e.g. 200"
-            value={form.promisedMbps}
-            onChange={(e) =>
-              setForm({ ...form, promisedMbps: e.target.value })
-            }
-            className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-900"
-          />
-          {errors.promisedMbps && (
-            <p className="mt-1 text-xs text-red-600">{errors.promisedMbps}</p>
+          {form.isp && ISP_PLANS[form.isp] ? (
+            <select
+              value={form.planName}
+              onChange={(e) => {
+                const plan = ISP_PLANS[form.isp]?.find((p) => p.name === e.target.value);
+                setForm({
+                  ...form,
+                  planName: e.target.value,
+                  currentPlanMbps: plan ? String(plan.speed) : "",
+                });
+              }}
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-900"
+            >
+              <option value="">Select plan...</option>
+              {ISP_PLANS[form.isp].map((plan) => (
+                <option key={plan.name} value={plan.name}>
+                  {plan.name}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              type="number"
+              step="1"
+              min="0"
+              placeholder="e.g. 200"
+              value={form.currentPlanMbps}
+              onChange={(e) =>
+                setForm({ ...form, currentPlanMbps: e.target.value })
+              }
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-900"
+            />
+          )}
+          {errors.currentPlanMbps && (
+            <p className="mt-1 text-xs text-red-600">{errors.currentPlanMbps}</p>
           )}
         </div>
       </div>
